@@ -31,7 +31,25 @@ jobs:
         run: npx playwright install-deps
 
       - name: Run Playwright tests
-        run: npx playwright test --reporter=junit --output=results
+        run: npx playwright test
+
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: playwright-test-results
+          path: results/test-results.xml
+
+      - name: Upload Playwright HTML report
+        uses: actions/upload-artifact@v2
+        with:
+          name: playwright-html-report
+          path: playwright-report
+
+      - name: Upload Playwright videos
+        uses: actions/upload-artifact@v2
+        with:
+          name: playwright-videos
+          path: test-results/**/*.webm
 
       - name: Upload Playwright test results to Xray
         env:
