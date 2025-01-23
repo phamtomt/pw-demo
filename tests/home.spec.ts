@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../pages/homePage';
+import { HomePage } from '../pages/HomePage';
 
 const searchTerms = [
     { term: 'hammer', expectedCount: 7 },
