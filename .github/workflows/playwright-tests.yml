@@ -28,10 +28,13 @@ jobs:
         run: npx playwright install
 
       - name: Run Playwright tests
-        run: npx playwright test --reporter=html
+        run: npx playwright test --reporter=junit --output=results
 
-      - name: Upload Playwright test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: playwright-test-results
-          path: playwright-report
+      - name: Upload Playwright test results to Xray
+        env:
+          XRAY_API_TOKEN: ${{ secrets.XRAY_API_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $XRAY_API_TOKEN" \
+               -F "file=@results/test-results.xml" \
+               -F "testExecKey=TEST-123" \
+               https://xray.cloud.xpand-it.com/api/v2/import/execution/junit
