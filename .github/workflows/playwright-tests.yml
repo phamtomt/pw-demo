@@ -34,19 +34,19 @@ jobs:
         run: npx playwright test
 
       - name: Upload Playwright test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: playwright-test-results
           path: results/test-results.xml
 
       - name: Upload Playwright HTML report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: playwright-html-report
           path: playwright-report
 
       - name: Upload Playwright videos
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: playwright-videos
           path: test-results/**/*.webm
