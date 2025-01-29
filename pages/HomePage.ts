@@ -27,4 +27,10 @@ export class HomePage {
     async gridCount() {
         return await this.productGrid.getByRole("link").count();
     }
+
+    async filterByCategory(categoryName: string) {
+        const categoryFilter = this.page.locator(`label:has-text("${categoryName}") input[type="checkbox"]`);
+        await categoryFilter.click();
+        await this.page.getByTestId('filter_completed').waitFor({ state: 'visible' });
+    }
 }
