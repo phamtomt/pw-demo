@@ -17,6 +17,10 @@ export class HomePage {
         await this.page.goto('https://practicesoftwaretesting.com/');
     }
 
+    async gridCount() {
+        return await this.productGrid.getByRole("link").count();
+    }
+
     async searchFor(term: string) {
         await this.searchInput.click();
         await this.searchInput.fill(term);
@@ -24,13 +28,28 @@ export class HomePage {
         await this.page.getByTestId('search_completed').waitFor({ state: 'visible' });
     }
     
-    async gridCount() {
-        return await this.productGrid.getByRole("link").count();
+    async getProducts() {
+        const products: { name: string; price: string }[] = [];
+        const productElements = await this.productGrid.getByRole("link").elementHandles();
+        
+        for (const productElement of productElements) {
+            const name = await productElement.$eval('[data-test="product-name"]', el => el.textContent.trim());
+            const price = await productElement.$eval('[data-test="product-price"]', el => el.textContent.trim());
+            products.push({ name, price });
+        }
+        
+        return products;
     }
 
     async filterByCategory(categoryName: string) {
         const categoryFilter = this.page.locator(`label:has-text("${categoryName}") input[type="checkbox"]`);
         await categoryFilter.click();
         await this.page.getByTestId('filter_completed').waitFor({ state: 'visible' });
+    }
+
+    async sortProducts(sortOption: string) {
+        const sortSelect = this.page.locator('[data-test="sort"]');
+        await sortSelect.selectOption(sortOption);
+        await this.page.getByTestId('sorting_completed').waitFor({ state: 'visible' });
     }
 }

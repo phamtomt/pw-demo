@@ -38,4 +38,22 @@ test.describe('Home Page', () => {
             expect(await homePage.gridCount()).toEqual(expectedCount);
         });
     });
+
+    const sortOptions = [
+        { option: 'Name (A - Z)', expectedFirstItem: 'Adjustable Wrench' },
+        { option: 'Name (Z - A)', expectedFirstItem: 'Wood Saw' },
+        { option: 'Price (Low - High)', expectedFirstItem: 'Washers' },
+        { option: 'Price (High - Low)', expectedFirstItem: 'Drawer Tool Cabinet' }   
+    ];
+
+    sortOptions.forEach(({ option, expectedFirstItem }) => {
+        test(`can sort by ${option}`, async ({ page }) => {
+            const homePage = new HomePage(page);
+            await homePage.goto();
+            await homePage.sortProducts(option);
+            
+            const products = await homePage.getProducts();
+            expect(products[0].name).toEqual(expectedFirstItem);
+        });
+    });
 });
