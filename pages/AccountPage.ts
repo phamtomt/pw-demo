@@ -1,26 +1,33 @@
 import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class AccountPage {
-    readonly page: Page;
+export class AccountPage extends BasePage {
     readonly pageTitle: Locator;
-    readonly logoutButton: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.pageTitle = page.getByTestId('page-title');
-        this.logoutButton = page.locator('button#logout');
     }
 
-    async goto() {
+    /**
+     * Navigates to the account page.
+     * @returns {Promise<void>}
+     */
+    override async goto(): Promise<void> {
         await this.page.goto('https://practicesoftwaretesting.com/account');
     }
 
-    async userName() {
-        const username = await this.page.locator('[data-test="nav-menu"]').textContent();
-        return username ? username.trim() : ''
-    }
-
-    async logout() {
-        await this.logoutButton.click();
+    /**
+     * Waits for the account page to be fully loaded by checking the visibility and text of the page title.
+     * @returns {Promise<boolean>} True if the page title is 'My account' or 'Sales over the years' and visible, false otherwise.
+     */
+    override async loaded(): Promise<boolean> {
+        try {
+            await this.pageTitle.waitFor({ state: 'visible' });
+            const titleText = await this.pageTitle.textContent();
+            return titleText?.trim() === 'My account' || titleText?.trim() === 'Sales over the years';
+        } catch {
+            return false;
+        }
     }
 }
